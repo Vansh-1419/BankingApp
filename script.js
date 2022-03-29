@@ -107,27 +107,27 @@ const createUserNames = (accs) => {
 createUserNames(accounts);
 
 //Showing the current display using map,filter and reduce
-const createPrintDisplay = (movements) => {
-  const balance = movements.reduce((acc, cur) => {
+const createPrintDisplay = (accs) => {
+  accs.balance = accs.movements.reduce((acc, cur) => {
     return acc + cur;
   }, 0);
-  labelBalance.textContent = `${balance}€`;
+  labelBalance.textContent = `${accs.balance}€`;
 };
 // createPrintDisplay(account1.movements);
 
 //Showing Summary through map,filter and reduce
-const displaySummary = (movements) => {
-  const income = movements
+const displaySummary = (accou) => {
+  const income = accou.movements
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov);
   labelSumIn.textContent = `${income}€`;
-  const credited = movements
+  const credited = accou.movements
     .filter((mov) => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(credited)}€`;
-  const intrest = movements
+  const intrest = accou.movements
     .filter((mov) => mov > 0)
-    .map((mov) => (mov * 1.2) / 100)
+    .map((mov) => (mov * accou.interestRate) / 100)
     .filter((int) => {
       return int >= 1;
     })
@@ -157,14 +157,33 @@ btnLogin.addEventListener("click", (e) => {
   }
   //Clear input values
   inputLoginPin.value = inputLoginUsername.value = "";
+  inputLoginPin.blur();
   //displayMovements
   displayMoments(currentAccount.movements);
   //displayTotal Balnce
-  createPrintDisplay(currentAccount.movements);
+  createPrintDisplay(currentAccount);
   //displaySummary
-  displaySummary(currentAccount.movements);
+  displaySummary(currentAccount);
 });
 //Login Add event handlers
+//TransferMoney
+btnTransfer.addEventListener("click", (e) => {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const recieverAccount = accounts.find((acc) => {
+    return acc.username === inputTransferTo.value;
+  });
+  console.log(amount, recieverAccount);
+  if (
+    amount > 0 &&
+    recieverAccount &&
+    currentAccount.balance >= amount &&
+    recieverAccount?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    recieverAccount.movements.push(amount);
+  }
+});
 
 // const createPrintDisplay = (movements) => {
 //   const balance = movements.reduce((acc, cur,i,arr) => {
