@@ -75,9 +75,9 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 //Currencies Displayed through ,Maps
-currencies.forEach(function (value, key, map) {
-  console.log(`${key}: ${value}`);
-});
+// currencies.forEach(function (value, key, map) {
+//   console.log(`${key}: ${value}`);
+// });
 
 //Displaying Movements, Dynamic fetching data
 const displayMoments = (movements) => {
@@ -92,6 +92,7 @@ const displayMoments = (movements) => {
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
+
 // displayMoments(account1.movements);
 
 //Creating UserName in Accounts Array
@@ -105,6 +106,16 @@ const createUserNames = (accs) => {
   });
 };
 createUserNames(accounts);
+
+//updateUi
+const updateUI = (acc) => {
+  //displayMovements
+  displayMoments(acc.movements);
+  //displayTotal Balnce
+  createPrintDisplay(acc);
+  //displaySummary
+  displaySummary(acc);
+};
 
 //Showing the current display using map,filter and reduce
 const createPrintDisplay = (accs) => {
@@ -158,12 +169,7 @@ btnLogin.addEventListener("click", (e) => {
   //Clear input values
   inputLoginPin.value = inputLoginUsername.value = "";
   inputLoginPin.blur();
-  //displayMovements
-  displayMoments(currentAccount.movements);
-  //displayTotal Balnce
-  createPrintDisplay(currentAccount);
-  //displaySummary
-  displaySummary(currentAccount);
+  updateUI(currentAccount);
 });
 //Login Add event handlers
 //TransferMoney
@@ -173,7 +179,7 @@ btnTransfer.addEventListener("click", (e) => {
   const recieverAccount = accounts.find((acc) => {
     return acc.username === inputTransferTo.value;
   });
-  console.log(amount, recieverAccount);
+  inputTransferTo.value = inputTransferAmount.value = "";
   if (
     amount > 0 &&
     recieverAccount &&
@@ -182,9 +188,28 @@ btnTransfer.addEventListener("click", (e) => {
   ) {
     currentAccount.movements.push(-amount);
     recieverAccount.movements.push(amount);
+    console.log(currentAccount.movements);
+    updateUI(currentAccount);
   }
 });
 
+//btn close
+btnClose.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value == currentAccount.username &&
+    Number(inputClosePin.value) == currentAccount.pin
+  ) {
+    const index = accounts.findIndex((acc) => {
+      return acc.username === currentAccount.username;
+    });
+    accounts.splice(index, 1);
+    //delete UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = "";
+});
 // const createPrintDisplay = (movements) => {
 //   const balance = movements.reduce((acc, cur,i,arr) => {
 //     // console.log(
