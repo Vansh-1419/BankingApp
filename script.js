@@ -81,6 +81,8 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 //Displaying Movements, Dynamic fetching data
 const displayMoments = (movements) => {
+  //Removed A bug (Bug was the data for movements kept on repating and )
+  containerMovements.innerHTML = " ";
   movements.forEach(function (mov, i) {
     const type = mov > 0 ? `deposit` : `withdrawal`;
     const html = `<div class="movements__row">
@@ -188,7 +190,6 @@ btnTransfer.addEventListener("click", (e) => {
   ) {
     currentAccount.movements.push(-amount);
     recieverAccount.movements.push(amount);
-    console.log(currentAccount.movements);
     updateUI(currentAccount);
   }
 });
@@ -209,6 +210,12 @@ btnClose.addEventListener("click", (e) => {
     containerApp.style.opacity = 0;
   }
   inputCloseUsername.value = inputClosePin.value = "";
+});
+
+btnLoan.addEventListener("click", (e) => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  
 });
 // const createPrintDisplay = (movements) => {
 //   const balance = movements.reduce((acc, cur,i,arr) => {
